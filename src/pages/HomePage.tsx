@@ -16,7 +16,7 @@ const HomePage = () => {
 
     return (
         <Container >
-            <Stack direction='row' spacing={3}>
+            <Stack direction='column' spacing={3} mt={3}>
                 <SearchBar filter={filter} handleChange={handleChangeFilter} />
                 <CustomTable posts={posts} filter={filter} />
                 <Paggination />

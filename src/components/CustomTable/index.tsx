@@ -13,7 +13,7 @@ import TableSortLabel from '@mui/material/TableSortLabel';
 import { Box } from '@mui/material';
 import { visuallyHidden } from '@mui/utils';
 import { filter } from 'lodash';
-
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 interface CustomTableProps {
     posts?: IPost[],
     filter: string
@@ -21,20 +21,39 @@ interface CustomTableProps {
 
 type SortingType = 'asc' | 'desc';
 
+const StyledTableSortLabel = styled(TableSortLabel)(() => ({
+    transition: 'color 0.4s',
+    '&.Mui-active': { color: '#fff' },
+    '&:hover': { color: '#d3d3d3' },
+    '&.Mui-active.MuiTableSortLabel-icon': { display: 'none' },
+}));
+
 const StyledTableCell = styled(TableCell)(() => ({
     [`&.${tableCellClasses.head}`]: {
         backgroundColor: '#474955',
         color: '#fff',
     },
     [`&.${tableCellClasses.body}`]: {
+        borderRight: '1px solid rgba(224, 224, 224, 1)',
         fontSize: 14,
+    },
+    '&.table-id': { width: '5%' },
+    '&.table-title': { width: '55%' },
+    // '&.table-body': { width: '35%' },
+
+    '&:last-child': {
+        borderRight: 0,
     },
 }));
 
 const StyledTableRow = styled(TableRow)(() => ({
-    '&:last-child td, &:last-child th': {
-        border: 0,
-    },
+    // '&:last-child td, &:last-child th': {
+    //     border: 0,
+    // },
+}));
+
+const StyledSortIcon = styled(KeyboardArrowDownIcon)(() => ({
+    marginLeft: '15px',
 }));
 
 const TABLE_HEAD = [
@@ -42,6 +61,8 @@ const TABLE_HEAD = [
     { id: 'title', label: 'Заголовок', alignLeft: false },
     { id: 'body', label: 'Описание', alignLeft: false }
 ];
+
+
 
 function descendingComparator(a: IPost, b: IPost, orderBy: string) {
     if (b[orderBy] < a[orderBy]) {
@@ -104,19 +125,17 @@ const CustomTable: FC<CustomTableProps> = ({ posts, filter }) => {
                                 align={headCell.alignLeft ? 'left' : 'center'}
                                 sortDirection={orderBy === headCell.id ? order as SortDirection : false}
                             >
-
-                                <TableSortLabel
+                                <StyledTableSortLabel
+                                    hideSortIcon={true}
                                     active={orderBy === headCell.id}
                                     direction={orderBy === headCell.id ? order as SortingType : 'asc'}
                                     onClick={createSortHandler(headCell.id)}
+                                    IconComponent={() => order === 'desc'
+                                        ? <StyledSortIcon sx={{ transform: 'rotate(180deg)' }} />
+                                        : <StyledSortIcon />}
                                 >
                                     {headCell.label}
-                                    {orderBy === headCell.id ? (
-                                        <Box sx={{ ...visuallyHidden }}>
-                                            {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                                        </Box>
-                                    ) : null}
-                                </TableSortLabel>
+                                </StyledTableSortLabel>
                             </StyledTableCell>
                         ))}
                     </TableRow>
@@ -126,16 +145,16 @@ const CustomTable: FC<CustomTableProps> = ({ posts, filter }) => {
                         ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                         .map((post) => (
                             <StyledTableRow key={post.id}>
-                                <StyledTableCell component="th" scope="row">
+                                <StyledTableCell component="th" scope="row" className='table-id'>
                                     {post.id}
                                 </StyledTableCell>
-                                <StyledTableCell>{post.title}</StyledTableCell>
-                                <StyledTableCell >{post.body}</StyledTableCell>
+                                <StyledTableCell className='table-title'>{post.title}</StyledTableCell>
+                                <StyledTableCell className='table-body'>{post.body}</StyledTableCell>
                             </StyledTableRow>
                         ))}
                 </TableBody>
             </Table>
-        </TableContainer>
+        </TableContainer >
     )
 }
 
