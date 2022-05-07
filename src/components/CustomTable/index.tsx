@@ -68,7 +68,7 @@ function applySortFilter(array: IPost[], comparator: (a: IPost, b: IPost) => num
         return a[1] - b[1];
     });
     if (query) {
-        return filter(array, (_post) => _post.title.toLowerCase().indexOf(query.toLowerCase()) !== -1);
+        return filter(stabilizedThis.map((el) => el[0]), (_post) => _post.title.toLowerCase().indexOf(query.toLowerCase()) !== -1);
     }
     return stabilizedThis.map((el) => el[0]);
 }
