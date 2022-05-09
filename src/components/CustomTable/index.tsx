@@ -14,10 +14,6 @@ import { Box } from '@mui/material';
 import { visuallyHidden } from '@mui/utils';
 import { filter } from 'lodash';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-interface CustomTableProps {
-    posts?: IPost[],
-    filter: string
-}
 
 type SortingType = 'asc' | 'desc';
 
@@ -38,7 +34,7 @@ const StyledTableCell = styled(TableCell)(() => ({
         fontSize: 14,
     },
     '&.table-id': { width: '5%' },
-    '&.table-title': { width: '55%' },
+    '&.table-title': { width: '40%' },
     // '&.table-body': { width: '35%' },
 
     '&:last-child': {
@@ -94,10 +90,19 @@ function applySortFilter(array: IPost[], comparator: (a: IPost, b: IPost) => num
     return stabilizedThis.map((el) => el[0]);
 }
 
-const CustomTable: FC<CustomTableProps> = ({ posts, filter }) => {
-    // Paggination
-    const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(10);
+interface CustomTableProps {
+    posts?: IPost[],
+    filter: string,
+    page: number,
+    rowsPerPage: number
+}
+
+
+const CustomTable: FC<CustomTableProps> = ({
+    posts,
+    filter,
+    page,
+    rowsPerPage }) => {
     // Sorting
     const [order, setOrder] = useState('asc' as SortingType);
     const [orderBy, setOrderBy] = useState('');
@@ -115,7 +120,7 @@ const CustomTable: FC<CustomTableProps> = ({ posts, filter }) => {
     const filteredPosts = posts && applySortFilter(posts, getComparator(order, orderBy), filter);
 
     return (
-        <TableContainer component={Paper}>
+        <TableContainer component={Paper} sx={{ height: 770 }}>
             <Table>
                 <TableHead>
                     <TableRow>
@@ -142,7 +147,7 @@ const CustomTable: FC<CustomTableProps> = ({ posts, filter }) => {
                 </TableHead>
                 <TableBody>
                     {filteredPosts
-                        ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                        ?.slice((page - 1) * rowsPerPage, (page - 1) * rowsPerPage + rowsPerPage)
                         .map((post) => (
                             <StyledTableRow key={post.id}>
                                 <StyledTableCell component="th" scope="row" className='table-id'>
