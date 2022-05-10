@@ -29,7 +29,7 @@ const HomePage = () => {
             <Stack direction='column' spacing={3} mt={3} mb={3}>
                 <SearchBar filter={filter} handleChange={handleChangeFilter} />
                 <CustomTable posts={posts} filter={filter} page={page} rowsPerPage={rowsPerPage} />
-                <Pagination page={page} handleChangePage={handleChangePage} count={countPages} />
+                <Pagination page={page} handleChangePage={handleChangePage} countPages={countPages} />
             </Stack>
         </Container>
     )
