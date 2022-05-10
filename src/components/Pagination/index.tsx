@@ -1,11 +1,12 @@
 import React, { FC } from 'react'
 
-import { Stack, styled, Typography, Box, Grid } from '@mui/material';
+import { styled, Typography, Grid } from '@mui/material';
 import usePagination from '@mui/material/usePagination/usePagination';
 
 const StyledButtons = styled(Typography)(() => ({
     fontSize: 24,
-    fontWeight: 500,
+    fontWeight: 600,
+    color: '#474955',
     margin: '0 40px',
     transition: 'color .4s',
     cursor: 'pointer',
@@ -23,7 +24,7 @@ const StyledButtons = styled(Typography)(() => ({
 }));
 
 const PaginationButton = styled('button')({
-    fontWeight: '700',
+    fontWeight: 700,
     fontSize: 18,
     fontStyle: 'italic',
     border: 0,
@@ -56,7 +57,7 @@ const Pagination: FC<PaginationProps> = ({ page, countPages, handleChangePage })
         return true
     }
 
-    return (countPages > 0 ?
+    return (
         <Grid container justifyContent='space-between' alignItems='center'>
             <Grid item>
                 <StyledButtons onClick={(e) => handleChangePage(e, page - 1)}
@@ -95,8 +96,6 @@ const Pagination: FC<PaginationProps> = ({ page, countPages, handleChangePage })
             </Grid>
 
         </Grid >
-        : <></>
-
     )
 }
 
