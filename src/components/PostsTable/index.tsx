@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 
-import { Container, Stack } from '@mui/material';
+import { Stack } from '@mui/material';
 import SearchBar from "components/SearchBar";
 import CustomTable from 'components/CustomTable';
 import Pagination from "components/Pagination";
 import { postAPI } from "services/PostsService";
-import { useLocation, useNavigate, useParams, } from "react-router-dom";
+import { useNavigate, useParams, } from "react-router-dom";
 
 
 const PostsTable = () => {

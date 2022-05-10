@@ -10,12 +10,8 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import TableSortLabel from '@mui/material/TableSortLabel';
-import { Box } from '@mui/material';
-import { visuallyHidden } from '@mui/utils';
-import { filter } from 'lodash';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-
-type SortingType = 'asc' | 'desc';
+import { applySortFilter, getComparator, SortingType } from 'utils/SortingUtil';
 
 const StyledTableSortLabel = styled(TableSortLabel)(() => ({
     transition: 'color 0.4s',
@@ -42,12 +38,6 @@ const StyledTableCell = styled(TableCell)(() => ({
     },
 }));
 
-const StyledTableRow = styled(TableRow)(() => ({
-    // '&:last-child td, &:last-child th': {
-    //     border: 0,
-    // },
-}));
-
 const StyledSortIcon = styled(KeyboardArrowDownIcon)(() => ({
     marginLeft: '15px',
 }));
@@ -60,43 +50,12 @@ const TABLE_HEAD = [
 
 
 
-function descendingComparator(a: IPost, b: IPost, orderBy: string) {
-    if (b[orderBy] < a[orderBy]) {
-        return -1;
-    }
-
-    if (b[orderBy] > a[orderBy]) {
-        return 1;
-    }
-    return 0;
-}
-
-function getComparator(order: SortingType, orderBy: string) {
-    return order === 'desc'
-        ? (a: IPost, b: IPost) => descendingComparator(a, b, orderBy)
-        : (a: IPost, b: IPost) => -descendingComparator(a, b, orderBy);
-}
-
-function applySortFilter(array: IPost[], comparator: (a: IPost, b: IPost) => number, query: string) {
-    const stabilizedThis = array.map((el, index) => [el, index] as [IPost, number]);
-    stabilizedThis.sort((a, b) => {
-        const order = comparator(a[0], b[0]);
-        if (order !== 0) return order;
-        return a[1] - b[1];
-    });
-    if (query) {
-        return filter(stabilizedThis.map((el) => el[0]), (_post) => _post.title.toLowerCase().indexOf(query.toLowerCase()) !== -1);
-    }
-    return stabilizedThis.map((el) => el[0]);
-}
-
 interface CustomTableProps {
     posts?: IPost[],
     filter: string,
     page: number,
     rowsPerPage: number
 }
-
 
 const CustomTable: FC<CustomTableProps> = ({
     posts,
@@ -117,7 +76,10 @@ const CustomTable: FC<CustomTableProps> = ({
         setOrderBy(property);
     };
 
-    const filteredPosts = posts && applySortFilter(posts, getComparator(order, orderBy), filter);
+    const queryFilter = (post: IPost, query: string) => {
+        return post.title.toLowerCase().indexOf(query.toLowerCase()) !== -1
+    }
+    const filteredPosts = posts && applySortFilter(posts, getComparator(order, orderBy), queryFilter, filter);
 
     return (
         <TableContainer component={Paper} sx={{ height: 770 }}>
@@ -149,13 +111,13 @@ const CustomTable: FC<CustomTableProps> = ({
                     {filteredPosts
                         ?.slice((page - 1) * rowsPerPage, (page - 1) * rowsPerPage + rowsPerPage)
                         .map((post) => (
-                            <StyledTableRow key={post.id}>
+                            <TableRow key={post.id}>
                                 <StyledTableCell component="th" scope="row" className='table-id'>
                                     {post.id}
                                 </StyledTableCell>
                                 <StyledTableCell className='table-title'>{post.title}</StyledTableCell>
                                 <StyledTableCell className='table-body'>{post.body}</StyledTableCell>
-                            </StyledTableRow>
+                            </TableRow>
                         ))}
                 </TableBody>
             </Table>
@@ -164,7 +126,3 @@ const CustomTable: FC<CustomTableProps> = ({
 }
 
 export default CustomTable
-
-function b(a: any, arg1: any[], b: any, arg3: any[]) {
-    throw new Error('Function not implemented.');
-}
