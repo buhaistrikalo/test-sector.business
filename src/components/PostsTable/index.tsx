@@ -1,19 +1,20 @@
-import { useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 
-import { Stack } from '@mui/material';
+import { CircularProgress, Stack } from '@mui/material';
 import SearchBar from "components/SearchBar";
 import CustomTable from 'components/CustomTable';
 import Pagination from "components/Pagination";
-import { postAPI } from "services/PostsService";
 import { useNavigate, useParams, } from "react-router-dom";
+import { IPost } from 'models/IPost';
 
+interface PostsTableProps {
+    posts?: IPost[]
+}
 
-const PostsTable = () => {
+const PostsTable: FC<PostsTableProps> = ({ posts }) => {
     // Router 
     const { page } = useParams()
     const navigate = useNavigate()
-    // Redux store
-    const { data: posts, error, isLoading } = postAPI.useFetchAllPostsQuery(100)
     // Filter
     const [filter, setFilter] = useState('')
     // Paggination
